@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Phone;
+use App\Repository\PhoneRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\FrameworkBundle\Repository\PhoneRepository;
-use Symfony\Bundle\FrameworkBundle\Entity\Phone;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
