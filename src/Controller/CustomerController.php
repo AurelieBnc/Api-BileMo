@@ -6,6 +6,7 @@ use App\Entity\Customer;
 use App\Repository\CustomerRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,9 +27,10 @@ class CustomerController extends AbstractController
     #[Route('/api/customers', name: 'customers', methods: ['GET'])]
     public function getCustomerList(CustomerRepository $customerRepository, SerializerInterface $serializer,  Request $request): JsonResponse
     {
-
         $customerList = $customerRepository->findAll();
-        $jsonCustomerList = $serializer->serialize($customerList, 'json');
+
+        $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
+        $jsonCustomerList = $serializer->serialize($customerList, 'json', $context);
 
         return new JsonResponse($jsonCustomerList, Response::HTTP_OK, [], true);
     }
@@ -36,7 +38,8 @@ class CustomerController extends AbstractController
     #[Route('/api/customers/{id}', name: 'detailCustomer', methods: ['GET'])]
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer): JsonResponse 
     {
-        $jsonCustomer = $serializer->serialize($customer, 'json');
+        $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
+        $jsonCustomer = $serializer->serialize($customer, 'json', $context);
 
         return new JsonResponse($jsonCustomer, Response::HTTP_OK, ['accept' => 'json'], true);
     }
@@ -62,7 +65,8 @@ class CustomerController extends AbstractController
         $em->persist($customer);
         $em->flush();
 
-        $jsonCustomer = $serializer->serialize($customer, 'json');
+        $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
+        $jsonCustomer = $serializer->serialize($customer, 'json', $context);
         $location = $urlGenerator->generate('detailCustomer', ['id' => $customer->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return new JsonResponse($jsonCustomer, Response::HTTP_CREATED, ["Location" => $location], true);
