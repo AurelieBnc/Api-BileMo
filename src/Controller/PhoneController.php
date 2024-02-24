@@ -19,7 +19,7 @@ class PhoneController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    #[Route('/api/phones', name: 'phone', methods: ['GET'])]
+    #[Route('/api/phones', name: 'phones', methods: ['GET'])]
     public function getPhoneList(PhoneRepository $phoneRepository, SerializerInterface $serializer,  Request $request): JsonResponse
     {
 
