@@ -17,7 +17,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class CustomerController extends AbstractController
 {
-
     /**
      * @param CustomerRepository $customerRepository
      * @param SerializerInterface $serializer
