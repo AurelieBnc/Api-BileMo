@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PhoneRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PhoneRepository::class)]
 class Phone
@@ -14,15 +15,27 @@ class Phone
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom du modèle est obligatoire")]
+    #[Assert\Length(min: 3, max: 255, minMessage: "Le nom du modèle doit faire au moins {{ limit }} caractères", maxMessage: "Le nom du modèle ne peut pas faire plus de {{ limit }} caractères")]
+    #[Assert\NoSuspiciousCharacters]
     private ?string $model = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La marque est obligatoire")]
+    #[Assert\Length(min: 3, max: 255, minMessage: "Le nom de la marque doit faire au moins {{ limit }} caractères", maxMessage: "Le nom de la marque ne peut pas faire plus de {{ limit }} caractères")]
+    #[Assert\NoSuspiciousCharacters]
     private ?string $brand = null;
 
     #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "La couleur est obligatoire")]
+    #[Assert\Length(min: 3, max: 255, minMessage: "Le nom de la couleur doit faire au moins {{ limit }} caractères", maxMessage: "Le nom de la couleur ne peut pas faire plus de {{ limit }} caractères")]
+    #[Assert\NoSuspiciousCharacters]
     private ?string $color = null;
 
     #[ORM\Column(length: 150)]
+    #[Assert\NotBlank(message: "Le système d'exploitation est obligatoire")]
+    #[Assert\Length(min: 3, max: 255, minMessage: "Le nom du système d'exploitation doit faire au moins {{ limit }} caractères", maxMessage: "Le nom du système d'exploitation ne peut pas faire plus de {{ limit }} caractères")]
+    #[Assert\NoSuspiciousCharacters]
     private ?string $operatingSystem = null;
 
     public function getId(): ?int
