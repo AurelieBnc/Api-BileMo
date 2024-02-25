@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CustomerController extends AbstractController
 {
@@ -53,7 +54,7 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/api/customers', name:"createCustomer", methods: ['POST'])]
-    public function createCustomer(Request $request, UserRepository $userRepository, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator): JsonResponse 
+    public function createCustomer(Request $request, UserRepository $userRepository, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse 
     {
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
 
@@ -61,6 +62,13 @@ class CustomerController extends AbstractController
         $idUser = $content['idUser'];
 
         $customer->setUser($userRepository->find($idUser));
+
+        $errors = $validator->validate($customer);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
+
         $em->persist($customer);
         $em->flush();
 

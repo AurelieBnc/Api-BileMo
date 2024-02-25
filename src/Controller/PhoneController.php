@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PhoneController extends AbstractController
 {
     /**
-     * @param BookRepository $bookRepository
+     * @param PhoneRepository $phoneRepository
      * @param SerializerInterface $serializer
      * @param Request $request
      * @return JsonResponse
@@ -29,7 +29,7 @@ class PhoneController extends AbstractController
     }
 
     #[Route('/api/phones/{id}', name: 'detailPhone', methods: ['GET'])]
-    public function getDetailBook(Phone $phone, SerializerInterface $serializer): JsonResponse 
+    public function getDetailPhone(Phone $phone, SerializerInterface $serializer): JsonResponse 
     {
         $jsonPhone = $serializer->serialize($phone, 'json');
 
