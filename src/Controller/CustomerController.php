@@ -14,10 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class CustomerController extends AbstractController
 {
-
     /**
      * @param CustomerRepository $customerRepository
      * @param SerializerInterface $serializer
@@ -25,9 +27,17 @@ class CustomerController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/customers', name: 'customers', methods: ['GET'])]
+    #[IsGranted('CUSTOMER_LIST')]
     public function getCustomerList(CustomerRepository $customerRepository, SerializerInterface $serializer,  Request $request): JsonResponse
     {
-        $customerList = $customerRepository->findAll();
+        try{
+            $user = $this->getUser();
+            if ($user) {
+                $customerList = $customerRepository->findByUser($user);
+            }            
+        } catch(AccessDeniedException $e) {
+            error_log($e->getMessage());
+            }
 
         $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
         $jsonCustomerList = $serializer->serialize($customerList, 'json', $context);
@@ -36,8 +46,9 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/api/customers/{id}', name: 'detailCustomer', methods: ['GET'])]
+    #[IsGranted('CUSTOMER_VIEW',  subject: 'customer')]
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer): JsonResponse 
-    {
+    {       
         $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
         $jsonCustomer = $serializer->serialize($customer, 'json', $context);
 
@@ -45,8 +56,9 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/api/customers/{id}', name: 'deleteCustomer', methods: ['DELETE'])]
+    #[IsGranted('CUSTOMER_DELETE', subject: 'customer')]
     public function deleteCustomer(Customer $customer, EntityManagerInterface $em): JsonResponse 
-    {
+    {  
         $em->remove($customer);
         $em->flush();
 
@@ -54,14 +66,18 @@ class CustomerController extends AbstractController
     }
 
     #[Route('/api/customers', name:"createCustomer", methods: ['POST'])]
-    public function createCustomer(Request $request, UserRepository $userRepository, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator): JsonResponse 
+    #[IsGranted('CUSTOMER_POST')]
+    public function createCustomer(Request $request, UserRepository $userRepository, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse 
     {
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');
+        $customer->setUser($userRepository->find($this->getUser()));
 
-        $content = $request->toArray();
-        $idUser = $content['idUser'];
+        $errors = $validator->validate($customer);
 
-        $customer->setUser($userRepository->find($idUser));
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors, 'json'), JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
+
         $em->persist($customer);
         $em->flush();
 
