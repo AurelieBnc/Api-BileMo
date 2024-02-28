@@ -22,7 +22,10 @@ class PhoneController extends AbstractController
     #[Route('/api/phones', name: 'phones', methods: ['GET'])]
     public function getPhoneList(PhoneRepository $phoneRepository, SerializerInterface $serializer,  Request $request): JsonResponse
     {
-        $phoneList = $phoneRepository->findAll();
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 5);
+
+        $phoneList = $phoneRepository->findAllWithPagination($page, $limit);
         $jsonPhoneList = $serializer->serialize($phoneList, 'json');
 
         return new JsonResponse($jsonPhoneList, Response::HTTP_OK, [], true);
