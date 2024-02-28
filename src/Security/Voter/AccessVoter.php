@@ -32,15 +32,14 @@ class AccessVoter extends Voter
             return false;
         }
 
-        if ($subject->getUser()->getUserIdentifier() !== $user->getUserIdentifier()) {
-            throw new AccessDeniedException("Utilisateur introuvable chez ". $user->getUserIdentifier());
-        }
-
         switch ($attribute) {
-            case self::CREATE:
             case self::DELETE:
-            case self::LIST:
             case self::VIEW:
+                $checkIdUser = $subject?->getUser()->getUserIdentifier() === $user->getUserIdentifier();
+                return $checkIdUser ? $checkIdUser : throw new AccessDeniedException("Utilisateur introuvable chez ". $user->getUserIdentifier());
+                break;
+            case self::LIST:
+            case self::CREATE:
                 return true;
                 break;
         }
