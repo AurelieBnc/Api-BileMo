@@ -10,6 +10,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class PhoneController extends AbstractController
 {
@@ -22,7 +24,10 @@ class PhoneController extends AbstractController
     #[Route('/api/phones', name: 'phones', methods: ['GET'])]
     public function getPhoneList(PhoneRepository $phoneRepository, SerializerInterface $serializer,  Request $request): JsonResponse
     {
-        $phoneList = $phoneRepository->findAll();
+        $page = $request->get('page', 1);
+        $limit = $request->get('limit', 5);
+
+        $phoneList = $phoneRepository->findAllWithPagination($page, $limit);
         $jsonPhoneList = $serializer->serialize($phoneList, 'json');
 
         return new JsonResponse($jsonPhoneList, Response::HTTP_OK, [], true);

@@ -31,9 +31,12 @@ class CustomerController extends AbstractController
     public function getCustomerList(CustomerRepository $customerRepository, SerializerInterface $serializer,  Request $request): JsonResponse
     {
         try{
+            $page = $request->get('page', 1);
+            $limit = $request->get('limit', 5);
+
             $user = $this->getUser();
             if ($user) {
-                $customerList = $customerRepository->findByUser($user);
+                $customerList = $customerRepository->findAllWithPaginationByUser($page, $limit, $user);
             }            
         } catch(AccessDeniedException $e) {
             error_log($e->getMessage());
