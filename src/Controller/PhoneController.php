@@ -4,17 +4,24 @@ namespace App\Controller;
 
 use App\Entity\Phone;
 use App\Repository\PhoneRepository;
+use JMS\Serializer\SerializationContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Contracts\Cache\ItemInterface;
-use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use App\Service\VersioningService;
 
 class PhoneController extends AbstractController
 {
+    private $version;
+
+    public function __construct(VersioningService $versioningService) 
+    {
+        $this->version = $versioningService->getVersion();
+    }
+
     /**
      * @param PhoneRepository $phoneRepository
      * @param SerializerInterface $serializer
@@ -28,7 +35,9 @@ class PhoneController extends AbstractController
         $limit = $request->get('limit', 5);
 
         $phoneList = $phoneRepository->findAllWithPagination($page, $limit);
-        $jsonPhoneList = $serializer->serialize($phoneList, 'json');
+
+        $context = SerializationContext::create()->setVersion($this->version);
+        $jsonPhoneList = $serializer->serialize($phoneList, 'json', $context);
 
         return new JsonResponse($jsonPhoneList, Response::HTTP_OK, [], true);
     }
@@ -36,7 +45,8 @@ class PhoneController extends AbstractController
     #[Route('/api/phones/{id}', name: 'detailPhone', methods: ['GET'])]
     public function getDetailPhone(Phone $phone, SerializerInterface $serializer): JsonResponse 
     {
-        $jsonPhone = $serializer->serialize($phone, 'json');
+        $context = SerializationContext::create()->setVersion($this->version);
+        $jsonPhone = $serializer->serialize($phone, 'json', $context);
 
         return new JsonResponse($jsonPhone, Response::HTTP_OK, ['accept' => 'json'], true);
     }
