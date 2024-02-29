@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation\Since;
 
 /**
  * @Hateoas\Relation(
@@ -72,6 +73,7 @@ class Customer
     #[Assert\NotBlank(message: "L'adresse mail est obligatoire")]
     #[Assert\Email(message: "L'adresse mail n'est pas valide")]
     #[Assert\NoSuspiciousCharacters]
+    #[Since("2.0")]
     private ?string $email = null;
 
     #[ORM\ManyToOne(inversedBy: 'customers')]

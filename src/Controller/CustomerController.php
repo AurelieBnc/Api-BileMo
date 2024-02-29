@@ -17,9 +17,17 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\VersioningService;
 
 class CustomerController extends AbstractController
 {
+    private $version;
+
+    public function __construct(VersioningService $versioningService) 
+    {
+        $this->version = $versioningService->getVersion();
+    }
+    
     /**
      * @param CustomerRepository $customerRepository
      * @param SerializerInterface $serializer
@@ -43,6 +51,7 @@ class CustomerController extends AbstractController
             }
 
         $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
+        $context->setVersion($this->version);
         $jsonCustomerList = $serializer->serialize($customerList, 'json', $context);
 
         return new JsonResponse($jsonCustomerList, Response::HTTP_OK, [], true);
@@ -53,6 +62,7 @@ class CustomerController extends AbstractController
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer): JsonResponse 
     {       
         $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
+        $context->setVersion($this->version);
         $jsonCustomer = $serializer->serialize($customer, 'json', $context);
 
         return new JsonResponse($jsonCustomer, Response::HTTP_OK, ['accept' => 'json'], true);
@@ -85,6 +95,7 @@ class CustomerController extends AbstractController
         $em->flush();
 
         $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
+        $context->setVersion($this->version);
         $jsonCustomer = $serializer->serialize($customer, 'json', $context);
         $location = $urlGenerator->generate('detailCustomer', ['id' => $customer->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 
