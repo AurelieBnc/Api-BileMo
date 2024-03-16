@@ -21,7 +21,8 @@ class PhoneRepository extends ServiceEntityRepository
         parent::__construct($registry, Phone::class);
     }
 
-    public function findAllWithPagination($page, $limit) {
+    public function findAllWithPagination(int $page,int $limit): array
+    {
         $qb = $this->createQueryBuilder('b')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit);
