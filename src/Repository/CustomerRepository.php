@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Customer;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -21,7 +22,8 @@ class CustomerRepository extends ServiceEntityRepository
         parent::__construct($registry, Customer::class);
     }
 
-    public function findAllWithPaginationByUser($page, $limit, $user) {
+    public function findAllWithPaginationByUser(int $page, int $limit, User $user): array
+    {
         $qb = $this->createQueryBuilder('b')
             ->andWhere('b.user = :val')
             ->setParameter('val', $user->getId())
