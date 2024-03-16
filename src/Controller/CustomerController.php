@@ -120,7 +120,7 @@ class CustomerController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/customers/{id}', name: 'detailCustomer', methods: ['GET'])]
-    #[IsGranted('CUSTOMER_VIEW',  subject: 'customer')]
+    #[IsGranted('CUSTOMER_DETAIL',  subject: 'customer')]
     public function getDetailCustomer(Customer $customer, SerializerInterface $serializer): JsonResponse 
     {       
         $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
@@ -215,7 +215,7 @@ class CustomerController extends AbstractController
      * @return JsonResponse
      */
     #[Route('/api/customers', name:"createCustomer", methods: ['POST'])]
-    #[IsGranted('CUSTOMER_POST')]
+    #[IsGranted('CUSTOMER_CREATE')]
     public function createCustomer(Request $request, UserRepository $userRepository, SerializerInterface $serializer, EntityManagerInterface $em, UrlGeneratorInterface $urlGenerator, ValidatorInterface $validator): JsonResponse 
     {
         $customer = $serializer->deserialize($request->getContent(), Customer::class, 'json');

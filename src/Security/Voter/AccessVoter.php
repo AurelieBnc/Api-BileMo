@@ -10,17 +10,17 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class AccessVoter extends Voter
 {
-    public const CREATE = 'CUSTOMER_POST';
+    public const CREATE = 'CUSTOMER_CREATE';
     public const DELETE = 'CUSTOMER_DELETE';
     public const LIST = 'CUSTOMER_LIST';
-    public const VIEW = 'CUSTOMER_VIEW';
+    public const DETAIL = 'CUSTOMER_DETAIL';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         return
         in_array($attribute, [self::CREATE, self::LIST]) ||
         (
-            in_array($attribute, [self::VIEW, self::DELETE])
+            in_array($attribute, [self::DETAIL, self::DELETE])
             && $subject instanceof Customer
         );
     }
@@ -34,9 +34,9 @@ class AccessVoter extends Voter
 
         switch ($attribute) {
             case self::DELETE:
-            case self::VIEW:
+            case self::DETAIL:
                 $checkIdUser = $subject?->getUser()->getUserIdentifier() === $user->getUserIdentifier();
-                return $checkIdUser ? $checkIdUser : throw new AccessDeniedException("Utilisateur introuvable chez ". $user->getUserIdentifier());
+                return $checkIdUser ? $checkIdUser : throw new AccessDeniedException("Utilisateur introuvable chez ". $user->getUsername());
                 break;
             case self::LIST:
             case self::CREATE:
