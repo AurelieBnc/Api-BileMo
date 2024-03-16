@@ -74,7 +74,7 @@ class CustomerController extends AbstractController
     #[IsGranted('CUSTOMER_LIST')]
     public function getCustomerList(CustomerRepository $customerRepository, SerializerInterface $serializer,  Request $request): JsonResponse
     {
-        try{
+        try {
             $page = $request->get('page', 1);
             $limit = $request->get('limit', 5);
 
@@ -82,9 +82,9 @@ class CustomerController extends AbstractController
             if ($user) {
                 $customerList = $customerRepository->findAllWithPaginationByUser($page, $limit, $user);
             }            
-        } catch(AccessDeniedException $e) {
+        } catch (AccessDeniedException $e) {
             error_log($e->getMessage());
-            }
+        }
 
         $context = SerializationContext::create()->setGroups(['groups' => 'getCustomers']);
         $context->setVersion($this->version);
