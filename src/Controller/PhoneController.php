@@ -75,7 +75,7 @@ class PhoneController extends AbstractController
         $context = SerializationContext::create()->setVersion($this->version);
         $jsonPhoneList = $serializer->serialize($phoneList, 'json', $context);
 
-        return new JsonResponse($jsonPhoneList, Response::HTTP_OK, [], true);
+        return new JsonResponse($jsonPhoneList, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
         /**
