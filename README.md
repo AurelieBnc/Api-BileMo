@@ -26,6 +26,9 @@ composer install
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 php bin/console doctrine:fixtures:load
+cd config
+mkdir jwt
+php bin/console lexik:jwt:generate-keypair
 ```
 ### Documentation API sécurisée, générée avec Nelmio au format OpenAPI
 ```
