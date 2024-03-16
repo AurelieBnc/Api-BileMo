@@ -90,7 +90,7 @@ class CustomerController extends AbstractController
         $context->setVersion($this->version);
         $jsonCustomerList = $serializer->serialize($customerList, 'json', $context);
 
-        return new JsonResponse($jsonCustomerList, Response::HTTP_OK, [], true);
+        return new JsonResponse($jsonCustomerList, Response::HTTP_OK, ['accept' => 'json'], true);
     }
 
 
@@ -235,6 +235,6 @@ class CustomerController extends AbstractController
         $jsonCustomer = $serializer->serialize($customer, 'json', $context);
         $location = $urlGenerator->generate('detailCustomer', ['id' => $customer->getId()], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return new JsonResponse($jsonCustomer, Response::HTTP_CREATED, ["Location" => $location], true);
+        return new JsonResponse($jsonCustomer, Response::HTTP_CREATED, ['Location' => $location, 'accept' => 'json'], true);
    }
 }
