@@ -37,7 +37,7 @@ class CachePhoneListener
             $item->tag('PhonesCache');
             $item->expiresAfter(600);
             $context = SerializationContext::create()->setGroups(['groups' => 'getPhones']);
-echo('pas de cache');
+
             return $serializer->serialize($phone, 'json', $context);
         });
 
