@@ -34,3 +34,7 @@ php bin/console lexik:jwt:generate-keypair
 ```
 Chemin : /api/doc
 ```
+ou 
+```
+https://github.com/AurelieBnc/Api-BileMo/blob/main/docs/BileMo.json
+```

@@ -1,0 +1,526 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "BileMo",
+    "description": "Une API permettant d'accéder aux différents téléphones vendus par BileMo.",
+    "version": "2.0.0"
+  },
+  "paths": {
+    "/api/login_check": {
+      "post": {
+        "tags": [
+          "Token"
+        ],
+        "summary": "Permet d'obtenir le token JWT pour se logger.",
+        "operationId": "postCredentialsItem",
+        "requestBody": {
+          "description": "Crée un nouveau token JWT",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Récupère le token JWT",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/doc.json": {
+      "get": {
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/customers": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Cette méthode permet de récupérer l'ensemble des consommateurs.",
+        "operationId": "get_customers",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "La page que l'on veut récupérer",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Le nombre d'éléments que l'on veut récupérer",
+            "schema": {
+              "type": "int"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retourne la liste des consommateurs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Vous devez vous authentifier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Cette méthode permet de créer un consommateur.",
+        "operationId": "post_createCustomer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "lastName": {
+                    "description": "Nom de famille du client",
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "description": "Prénom du client",
+                    "type": "string"
+                  },
+                  "email": {
+                    "description": "Adresse email du client",
+                    "type": "string",
+                    "format": "email"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Crée un consommateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Données invalides, veuillez réessayer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Vous devez vous authentifier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/customers/{id}": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Cette méthode permet de récupérer le détail d'un consommateur.",
+        "operationId": "get_detailCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retourne le détail d'un consommateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Vous devez vous authentifier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "Cette méthode permet de supprimer un consommateur.",
+        "operationId": "delete_deleteCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Supprime un consommateur",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Vous devez vous authentifier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Customer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/phones": {
+      "get": {
+        "tags": [
+          "Phones"
+        ],
+        "summary": "Cette méthode permet de récupérer l'ensemble des téléphones.",
+        "operationId": "get_phones",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "La page que l'on veut récupérer",
+            "schema": {
+              "type": "int"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Le nombre d'éléments que l'on veut récupérer",
+            "schema": {
+              "type": "int"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retourne la liste des téléphones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Phone"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Vous devez vous authentifier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Phone"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/phones/{id}": {
+      "get": {
+        "tags": [
+          "Phones"
+        ],
+        "summary": "Cette méthode permet de récupérer le détail d'un téléphone.",
+        "operationId": "get_detailPhone",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retourne le détail d'un téléphone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Phone"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Vous devez vous authentifier",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Phone"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Token": {
+        "properties": {
+          "token": {
+            "type": "string",
+            "readOnly": true
+          }
+        },
+        "type": "object"
+      },
+      "Credentials": {
+        "properties": {
+          "username": {
+            "type": "string",
+            "default": "user@mail.com"
+          },
+          "password": {
+            "type": "string",
+            "default": "password"
+          }
+        },
+        "type": "object"
+      },
+      "Customer": {
+        "required": [
+          "lastName",
+          "firstName",
+          "email",
+          "user"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "lastName": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3
+          },
+          "email": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "_links": {
+            "properties": {
+              "self": {
+                "properties": {
+                  "href": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "delete": {
+                "properties": {
+                  "href": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "create": {
+                "properties": {
+                  "href": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "list": {
+                "properties": {
+                  "href": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            },
+            "readOnly": true
+          }
+        },
+        "type": "object"
+      },
+      "Phone": {
+        "required": [
+          "model",
+          "brand",
+          "color",
+          "operatingSystem"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "model": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3
+          },
+          "brand": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3
+          },
+          "color": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3
+          },
+          "operatingSystem": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3
+          }
+        },
+        "type": "object"
+      },
+      "User": {
+        "required": [
+          "username"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "username": {
+            "type": "string",
+            "maxLength": 255,
+            "minLength": 3
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ]
+}
